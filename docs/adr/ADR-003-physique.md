@@ -13,7 +13,7 @@ Physique custom légère pour foot top-down. Pas de moteur lourd type Matter.js 
 
 - **Roulement au sol** (`z = 0`) : `a = -μ_roll · g · v̂` avec `μ_roll = 0.4`. Stop net si `|v| < 0.05 m/s`.
 - **Vol** (`z > 0`) : `vz' = vz - g · dt` avec `g = 9.81`. `z' = z + vz · dt`.
-- **Rebond** : à `z ≤ 0` et `vz < 0` → `z = 0`, `vz = -e · vz` avec `e = 0.45` (cuir/herbe). Amortissement horizontal `v *= 0.7`.
+- **Rebond** : à `z ≤ 0` et `vz < 0` → `z = 0`, `vz = -e · vz` avec `e = 0.6`. Amortissement horizontal `v *= 0.7`. Valeur calibrée à la main pour que les 2e et 3e rebonds restent visibles depuis un drop ~5 m (apex successifs 1.8 m → 0.65 m → 0.23 m).
 - **Magnus simplifié** (optionnel V1) : `a_lateral = k_magnus · vel × spin · ẑ` avec `k_magnus = 0.05`. Activé seulement sur tirs avec courbe demandée. Skip-able si la complexité dérape.
 - **Sortie de terrain** : pas de rebond sur les bords. Le système `rules` détecte la sortie et déclenche touche / corner / but.
 
