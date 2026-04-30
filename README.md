@@ -58,6 +58,21 @@ tests/           # Vitest
 docs/adr/        # Architecture Decision Records
 ```
 
+## Contrôles V1 (clavier)
+
+| Touche                   | Effet                                                                  |
+| ------------------------ | ---------------------------------------------------------------------- |
+| `↑` / `W` ou `↓` / `S`   | Avancer (alterner les deux flèches déclenche un demi-tour 180°)        |
+| `←` / `A` et `→` / `D`   | Pivoter en continu (6 rad/s)                                           |
+| `Shift`                  | Sprint (uniquement en avant, draine la stamina)                        |
+| `Espace` (charge)        | Tir : 12–28 m/s, élévation au-delà de 30 % de charge, max 20°          |
+| `E` (tap < 80 ms)        | Passe à plat (10 m/s, ras du sol)                                      |
+| `E` (hold, charge)       | Lob (10–22 m/s, élévation 15°→45°)                                     |
+| `←` / `→` pendant le vol | Donne du spin au ballon (Magnus). Sens verrouillé à la 1ère impulsion. |
+| `R`                      | Reset position joueur + ballon                                         |
+
+Pendant que le ballon est libre et en mouvement, la rotation du joueur est figée pour que `←/→` ne pilote que le spin sans dévier le facing.
+
 ## État du projet
 
 V1 en cours. Progression dans `CHANGELOG.md`.

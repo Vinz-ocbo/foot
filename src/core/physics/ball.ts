@@ -16,6 +16,9 @@ export const BOUNCE_HORIZONTAL_DAMPING = 0.7;
 export const STOP_VEL_THRESHOLD_MS = 0.05;
 export const BOUNCE_SETTLE_VZ_THRESHOLD_MS = 0.5;
 export const BALL_RADIUS_M = 0.11;
+export const MAGNUS_COEF = 0.05;
+export const SPIN_HALF_LIFE_S = 1.0;
+export const SPIN_NEGLIGIBLE_THRESHOLD_RAD_S = 0.01;
 
 export function createBall(): BallState {
   return {
@@ -31,6 +34,14 @@ export function createBall(): BallState {
 // Semi-implicit Euler : on met à jour vz avant d'intégrer z avec le nouveau vz.
 export function stepBall(ball: BallState, dt: number): void {
   ball.vz -= GRAVITY_MS2 * dt;
+
+  // Magnus : a_lat = k · spin · v_perp. Toujours appliqué (vol et roulement).
+  if (ball.spin !== 0) {
+    const ax = -MAGNUS_COEF * ball.spin * ball.vel.y;
+    const ay = MAGNUS_COEF * ball.spin * ball.vel.x;
+    ball.vel.x += ax * dt;
+    ball.vel.y += ay * dt;
+  }
 
   ball.pos.x += ball.vel.x * dt;
   ball.pos.y += ball.vel.y * dt;
@@ -73,5 +84,11 @@ export function stepBall(ball: BallState, dt: number): void {
         }
       }
     }
+  }
+
+  // Décroissance exponentielle du spin (demi-vie SPIN_HALF_LIFE_S).
+  if (ball.spin !== 0) {
+    ball.spin *= Math.pow(0.5, dt / SPIN_HALF_LIFE_S);
+    if (Math.abs(ball.spin) < SPIN_NEGLIGIBLE_THRESHOLD_RAD_S) ball.spin = 0;
   }
 }

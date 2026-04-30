@@ -46,9 +46,11 @@ These come from `.clinerules` and the V1 prompt — violating them is a real bug
 ## Soft rules locked early in cadrage (V1 quirks worth remembering)
 
 - **Keyboard only in V1**, gamepad deferred to V2. Keep `src/input/` abstract (`InputSource` interface) so gamepad slots in without refactor.
-- **Camera is a fixed "stadium" view** in V1 (full pitch visible at 1280×720). No scroll, no zoom. Look-ahead camera is V2.
+- **Tank-style movement** (J2): `↑↓` produce thrust forward in the player's facing; alternating between them triggers a 180° flip + velocity reset. `←→` rotate the player at 6 rad/s. There is no backward thrust. Diagonal speed is naturally normalized (no extra logic needed).
+- **Spin direction locks** (J2): once the user starts curving a free ball with `←/→`, the sign is locked until the ball is captured or stops. Opposite-sign input is ignored mid-flight. Player rotation is also suppressed while the ball is in flight so `←/→` only feeds the spin without drifting the facing.
+- **Camera is a fixed "stadium" view** in V1 (full pitch visible at 1280×720). Canvas is CSS-responsive (16:9 letterbox, body filled green). No scroll, no zoom. Look-ahead camera is V2.
 - **Soft offside rule**: AI attackers must not stay ahead of the last opposing defender outside an active run. Implemented as a constraint in the AI FSM, not a referee call. The human is not penalized.
-- **Player switching**: closest-to-ball with **0.4 s cooldown + 1 m hysteresis** to prevent ping-pong. Manual switch (Tab) bypasses both.
+- **Player switching** (J3): closest-to-ball with **0.4 s cooldown + 1 m hysteresis** to prevent ping-pong. Manual switch (Tab) bypasses both.
 - **Replay determinism with quantized inputs**: when gamepad lands in V2, axes are quantized to 32 values (8 directions × 4 intensity levels) before the replay buffer. Don't store raw floats.
 
 ## Milestones

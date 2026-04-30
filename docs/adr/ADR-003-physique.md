@@ -14,7 +14,7 @@ Physique custom légère pour foot top-down. Pas de moteur lourd type Matter.js 
 - **Roulement au sol** (`z = 0`) : `a = -μ_roll · g · v̂` avec `μ_roll = 0.4`. Stop net si `|v| < 0.05 m/s`.
 - **Vol** (`z > 0`) : `vz' = vz - g · dt` avec `g = 9.81`. `z' = z + vz · dt`.
 - **Rebond** : à `z ≤ 0` et `vz < 0` → `z = 0`, `vz = -e · vz` avec `e = 0.6`. Amortissement horizontal `v *= 0.7`. Valeur calibrée à la main pour que les 2e et 3e rebonds restent visibles depuis un drop ~5 m (apex successifs 1.8 m → 0.65 m → 0.23 m).
-- **Magnus simplifié** (optionnel V1) : `a_lateral = k_magnus · vel × spin · ẑ` avec `k_magnus = 0.05`. Activé seulement sur tirs avec courbe demandée. Skip-able si la complexité dérape.
+- **Magnus simplifié** (actif V1) : `a_lateral = k_magnus · spin · v_perp` avec `k_magnus = 0.05`. Toujours appliqué (vol et roulement). Spin alimenté par l'input `rotate` du joueur quand le ballon est libre et en mouvement, plafonné à ±15 rad/s. Décroissance exponentielle, demi-vie 1 s.
 - **Sortie de terrain** : pas de rebond sur les bords. Le système `rules` détecte la sortie et déclenche touche / corner / but.
 
 ## Joueur
@@ -25,7 +25,7 @@ Physique custom légère pour foot top-down. Pas de moteur lourd type Matter.js 
 - **Collisions joueur-joueur** : cercles `r = 0.4 m`. Séparation positionnelle 50/50 + impulsion symétrique légère.
 - **Possession** : `|ball.pos - player.pos| < 0.6 m` ET `|ball.vel - player.vel| < 3 m/s` ET ballon dans cône frontal 90° → soft-attach. Ballon glisse à 0.5 m devant facing, lerp = 0.4. Relâche sur tir, passe, tacle réussi adverse, ou perte de contrôle.
 - **Tacle** : impulsion frontale 0.3 s, hitbox capsule (1.5 m × 0.5 m). Si overlap avec porteur adverse : transfert possession + impulsion résiduelle communiquée au ballon. Probabilités déterministes : 90 % dans le dos, 60 % de côté, 35 % de face. Tirage avec PRNG seedé.
-- **Tir** : `v_ball = facing · power`, `power ∈ [8, 30] m/s` selon durée de charge (0–1.5 s, courbe quasi-linéaire). `vz = power · sin(elev)` avec `elev` proportionnel à la durée d'appui au-delà de 60 % (frappes molles restent au sol).
+- **Tir** : `v_ball = facing · power`, `power ∈ [12, 28] m/s`. Charge complète en 0.5 s. Élévation max **20°** (calibrée à la main pour limiter la hauteur visuelle des frappes chargées : apex ~4.7 m, range ~51 m). `vz = power · sin(elev)` avec `elev` proportionnel à la durée d'appui au-delà de 30 %.
 - **Passe** : direction ajustée vers coéquipier le mieux aligné dans cône 45° du facing. Vitesse `v = clamp(dist · 1.4, 8, 22)`.
 
 ## Stamina

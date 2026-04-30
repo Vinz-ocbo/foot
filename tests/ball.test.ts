@@ -89,6 +89,52 @@ describe('ball physics — vol vertical', () => {
   });
 });
 
+describe('ball physics — effet (Magnus)', () => {
+  it('le spin courbe la trajectoire perpendiculairement à la vitesse', () => {
+    const b = createBall();
+    b.vel.x = 20;
+    b.spin = 10;
+    for (let i = 0; i < 30; i++) stepBall(b, DT);
+    expect(Math.abs(b.vel.y)).toBeGreaterThan(0.5);
+  });
+
+  it('spin positif et négatif courbent dans des sens opposés', () => {
+    const a = createBall();
+    a.vel.x = 20;
+    a.spin = 5;
+    const b = createBall();
+    b.vel.x = 20;
+    b.spin = -5;
+    for (let i = 0; i < 30; i++) {
+      stepBall(a, DT);
+      stepBall(b, DT);
+    }
+    expect(Math.sign(a.vel.y)).not.toBe(Math.sign(b.vel.y));
+  });
+
+  it('le spin décroît à demi-vie SPIN_HALF_LIFE_S', () => {
+    const b = createBall();
+    b.spin = 10;
+    for (let i = 0; i < 60; i++) stepBall(b, DT);
+    expect(Math.abs(b.spin)).toBeCloseTo(5, 0);
+  });
+
+  it('spin nul ne courbe pas la trajectoire', () => {
+    const b = createBall();
+    b.vel.x = 20;
+    b.spin = 0;
+    for (let i = 0; i < 30; i++) stepBall(b, DT);
+    expect(b.vel.y).toBe(0);
+  });
+
+  it('le spin minuscule est snap à zéro', () => {
+    const b = createBall();
+    b.spin = 0.005;
+    stepBall(b, DT);
+    expect(b.spin).toBe(0);
+  });
+});
+
 describe('ball physics — rebond', () => {
   it('post-rebond |vz| / impact |vz| = RESTITUTION', () => {
     const ball = createBall();

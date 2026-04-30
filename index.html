@@ -9,7 +9,8 @@
       body {
         margin: 0;
         padding: 0;
-        background: #111;
+        height: 100%;
+        background: #1f7a1f;
         color: #ddd;
         font-family: ui-monospace, Menlo, Consolas, monospace;
         overflow: hidden;
@@ -18,11 +19,17 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        min-height: 100vh;
       }
       #stage {
-        box-shadow: 0 0 24px rgba(0, 0, 0, 0.6);
-        image-rendering: pixelated;
+        width: 100vw;
+        height: calc(100vw * 9 / 16);
+        max-height: 100vh;
+        max-width: calc(100vh * 16 / 9);
+      }
+      #stage canvas {
+        width: 100% !important;
+        height: 100% !important;
+        display: block;
       }
     </style>
   </head>
