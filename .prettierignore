@@ -1,0 +1,7 @@
+dist/
+node_modules/
+coverage/
+package-lock.json
+.claude/
+prompt-jeu-foot-v1.md
+.clinerules
